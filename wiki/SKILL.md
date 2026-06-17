@@ -141,13 +141,27 @@ Use the template at `~/.claude/skills/wiki/assets/raw-README.md`. Copy verbatim 
 - `decisions/index.md` — empty decisions index with column headers
 - `log/YYYY-MM-DD-wiki-init.md` — initial log entry recording the bootstrap
 
-**Step 7 — Emit receipt and commit.**
+**Step 7 — Add wiki pointer to CLAUDE.md.**
+If a `CLAUDE.md` exists at the repo root, append a `## Wiki` section with a short pointer. If no `CLAUDE.md` exists, skip this step (wiki init doesn't own CLAUDE.md creation).
+
+Append exactly this (adapting the wiki path if non-standard):
+```markdown
+
+## Wiki
+
+Project knowledge wiki at `docs/wiki/`. Read `docs/wiki/decisions/index.md` before work touching architecture or content patterns. Use `/wiki log` at session end to capture decisions and changes.
+```
+
+Do not duplicate WIKI-CLAUDE.md content — sessions that touch the wiki will read it directly.
+
+**Step 8 — Emit receipt and commit.**
 Print a summary:
 ```
 Wiki bootstrapped at docs/wiki/
   - WIKI-CLAUDE.md (schema)
   - index.md, overview.md (seed content)
   - decisions/, log/, raw/ (structure)
+  - CLAUDE.md updated with wiki pointer (if it existed)
   - 1 log entry recorded
 ```
 Create a single git commit: `docs(wiki): bootstrap project wiki`.
