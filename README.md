@@ -6,7 +6,7 @@ Custom Claude Code skills authored by Bearded Ginger Designs. Each skill is syml
 
 ### [wiki](wiki/SKILL.md)
 
-Canonical project wiki curator. One skill handles every wiki operation: bootstrap (`/wiki init`), convert existing docs (`/wiki convert`), ingest raw sources (`/wiki ingest`), web research with wiki staging (`/wiki research`), session wrap-up (`/wiki log`), health checks (`/wiki lint`), queries (`/wiki query`), and decision recording (`/wiki decide`). The wiki skill is the only writer to curated pages -- external producers stage to `raw/<source>/` and the ingest pipeline curates.
+Canonical project wiki curator. Nine modes: bootstrap (`/wiki init`), convert existing docs (`/wiki convert`), ingest raw sources (`/wiki ingest`), web research (`/wiki research`), session wrap-up (`/wiki log`), health checks (`/wiki lint`), queries (`/wiki query`), decision recording (`/wiki decide`), and browsable static site (`/wiki human-version`). The wiki skill is the only writer to curated pages -- external producers stage to `raw/<source>/` and the ingest pipeline curates.
 
 ### [ask-the-board](ask-the-board/SKILL.md)
 
@@ -19,6 +19,10 @@ Onboard a new advisor or expand an existing one's knowledge base. Discovers cont
 ### [web-scraping](web-scraping/SKILL.md)
 
 Scrape, search, and extract structured data from the web using Exa (semantic search) and Firecrawl (JS-rendered page scraping). Routes between tools based on the job -- Exa for semantic discovery and research, Firecrawl for full-page extraction from known URLs and JS-heavy sites. Includes workflows for search-then-scrape, site crawling, and structured data extraction.
+
+### [refine-skill](refine-skill/SKILL.md)
+
+Critically review a skill for verbosity and over-specification, then rewrite it. Applies the grill-me standard: describe behavior and non-obvious constraints, trust the model for everything else. Core lens: "if I deleted this line, would the model do something worse?" Sorts every line into three buckets -- model already knows (delete), model would derive (delete), non-obvious constraint (keep).
 
 ### [firecrawl](firecrawl/SKILL.md)
 
