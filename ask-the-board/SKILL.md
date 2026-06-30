@@ -63,6 +63,8 @@ Before spawning advisor agents, frame the question:
    - What failure would look like
 3. **Do not block on missing info.** Make reasonable assumptions and label them clearly so advisors can challenge the assumptions as part of their analysis.
 
+**Prospect doc resolution (D-06):** Extract kebab-case identifiers from the question. For each candidate, check if `prospects/<candidate>.md` or `prospects/converted/<candidate>.md` exists. If found, read the prospect doc and include it in the advisor context files (Phase 2). This gives advisors the full dossier for pricing, positioning, and deal strategy advice.
+
 Present the framing to Justin for a quick gut check before proceeding. If he corrects an assumption, update and continue.
 
 ### Phase 2 — Isolate (Independent Advisor Analysis)
