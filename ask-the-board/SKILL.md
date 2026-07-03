@@ -1,15 +1,9 @@
 ---
 name: ask-the-board
 description: >
-  Deliberate with your board of advisors. Each advisor is an agent backed by
-  ingested creator content — they reason independently, then the board synthesizes
-  a unified response. The defining signal is asking advisors, the board, or
-  seeking multi-perspective counsel on a decision.
-  Trigger phrases: "ask my board about X", "run this by my advisors",
-  "what would my board say about X", "board meeting on X",
-  "get my advisors' take on X", "deliberate on X".
-  Depth: defaults to quick take. Say "deliberate deeply" or "deep" for full
-  multi-round deliberation.
+  Deliberate with your board of advisors — independent analysis from each advisor's lens, then a unified synthesis.
+  Use when the user wants to ask the board, run something by advisors, or get multi-perspective counsel on a decision.
+  Depth: defaults to quick take. Say "deliberate deeply" or "deep" for full multi-round deliberation.
   Also triggers on /ask-the-board.
 ---
 
@@ -18,16 +12,6 @@ description: >
 Pose a question to your board of advisors. Each advisor is an independent agent
 backed by ingested public content from real creators. They deliberate and return
 a unified perspective — not individual reports.
-
-This is NOT about impersonating creators. Advisor agents use documented frameworks
-and recurring patterns as decision lenses. When knowledge doesn't cover a topic,
-they reason from adjacent principles and label it as extrapolation.
-
-## When to invoke
-
-- User wants multi-perspective counsel on a business or technical decision
-- User says "ask my board", "run this by my advisors", "what would my board say"
-- User invokes /ask-the-board
 
 ## Prerequisites
 

@@ -1,10 +1,9 @@
 ---
 name: web-scraping
 description: >
-  Scrape, search, and extract structured data from the web using Exa (semantic search)
-  and Firecrawl (JS-rendered page scraping). Use when user asks to scrape a website,
-  extract data from URLs, search the web semantically, crawl pages, get content from
-  JS-heavy sites, collect structured data from the web, or mentions Exa or Firecrawl.
+  Scrape, search, and extract structured data from the web using Exa and Firecrawl.
+  Use when the user wants to scrape websites, search the web semantically, crawl pages,
+  extract structured data, or mentions Exa or Firecrawl.
 ---
 
 # Web Scraping
@@ -59,44 +58,13 @@ Two-tool strategy: **Exa** finds the right pages and fetches content, **Firecraw
 2. `mcp__firecrawl__firecrawl_extract` with `urls` and `schema`
 3. Firecrawl returns structured JSON matching your schema
 
-## Key parameters
+## Usage notes
 
-### Exa simple search (`web_search_exa`)
-- `query`: natural language — describe the ideal page, not just keywords ("blog post comparing React and Vue performance" not "React vs Vue")
-- `numResults`: number of results (default 10)
-- Tip: append `category:people` or `category:company` to the query string for LinkedIn-style searches
-
-### Exa advanced search (`web_search_advanced_exa`)
-- `query`: search query (question, statement, or keywords)
-- `type`: `"auto"` (recommended) | `"fast"` | `"instant"`
-- `numResults`: 1-100 (default 10)
-- `includeDomains` / `excludeDomains`: domain filters (e.g., `["arxiv.org", "github.com"]`)
-- `includeText` / `excludeText`: require or exclude specific text strings in results
-- `startPublishedDate` / `endPublishedDate`: ISO 8601 date filters (YYYY-MM-DD)
-- `startCrawlDate` / `endCrawlDate`: filter by when Exa crawled the page
-- `category`: `"company"` | `"research paper"` | `"news"` | `"pdf"` | `"github"` | `"personal site"` | `"people"` | `"financial report"`
-- `enableHighlights`: `true` to get relevant snippets per result
-- `highlightsMaxCharacters`: max total characters across all highlights per URL
-- `enableSummary`: `true` for AI-generated summary per result
-- `subpages`: number of subpages to crawl from each result (1-10)
-- `subpageTarget`: keywords to guide subpage selection
-- `maxAgeHours`: max cache age (0 = always fresh)
-- `userLocation`: ISO country code for geo-targeted results (e.g., `"US"`)
-
-### Exa fetch (`web_fetch_exa`)
-- `urls`: array of URLs to read (batch multiple in one call)
-- `maxCharacters`: max characters per page (default 3000)
-
-### Firecrawl scrape
-- `url`: target URL
-- `formats`: `["markdown"]` for clean text, `["html"]` for raw, `["screenshot"]` for visual
-- `onlyMainContent`: `true` to skip nav/footer/ads (default true)
-- `waitFor`: milliseconds to wait for JS rendering
-
-### Firecrawl extract
-- `urls`: array of URLs to extract from
-- `schema`: JSON Schema defining the output structure
-- `prompt`: natural language instruction for the extraction
+- Exa queries: describe the ideal page, not keywords ("blog post comparing React and Vue performance" not "React vs Vue")
+- `web_fetch_exa` batches multiple URLs — always pass all URLs together instead of one at a time
+- `enableHighlights: true` on advanced search gets relevant snippets without a separate fetch call
+- Firecrawl with `formats: ["markdown"]` gives the cleanest LLM-consumable output
+- For large crawls, start with `limit: 5` to verify scope before scaling up
 
 ## Fallbacks
 
@@ -114,13 +82,4 @@ If neither MCP is connected:
 - Install Exa MCP: `claude mcp add exa -e EXA_API_KEY=... -- npx -y exa-mcp-server`
 - Install Firecrawl: either MCP (`claude mcp add firecrawl -e FIRECRAWL_API_KEY=... -- npx -y firecrawl-mcp`) or CLI (`npx -y firecrawl-cli@latest init --all --browser`)
 
-## Tips
-
-- Exa semantic search is much better than keyword search for "find me pages about X" — describe the ideal page in your query
-- Use `web_search_exa` for quick lookups, `web_search_advanced_exa` when you need date/domain/category filters
-- `web_fetch_exa` batches multiple URLs in one call — always pass all URLs together instead of one at a time
-- Firecrawl with `formats: ["markdown"]` gives the cleanest LLM-consumable output
-- For large crawls, start with `limit: 5` to verify scope before scaling up
-- Use `mcp__firecrawl__firecrawl_extract` when you need tabular or structured data — it's more reliable than scraping + parsing
-- Set `enableHighlights: true` on advanced search to get relevant snippets without a separate fetch call
-- For comprehensive Firecrawl usage (CLI, build integration, workflow deliverables), see the `/firecrawl` skill
+For comprehensive Firecrawl usage (CLI, build integration, workflow deliverables), see the `/firecrawl` skill.

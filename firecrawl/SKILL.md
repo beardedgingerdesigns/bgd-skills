@@ -1,18 +1,12 @@
 ---
 name: firecrawl
-description: |
-  Firecrawl gives AI agents and apps fast, reliable web context with
-  strong search, scraping, and interaction tools. One install command
-  sets up three skill segments: live CLI tools, app-integration build
-  skills, and outcome-focused workflow skills. Route the reader to the
-  right usage path after install.
+description: >
+  Firecrawl web data tools — CLI scraping, app integration, and workflow deliverables.
+  Use when the user wants to install Firecrawl, scrape with the Firecrawl CLI, add Firecrawl to app code,
+  or produce deliverables from web data. Also triggers on /firecrawl.
 ---
 
 # Firecrawl
-
-Firecrawl helps agents search first, scrape clean content, interact
-with live pages when plain extraction is not enough, and produce
-finished deliverables from web data.
 
 ## Install
 
@@ -80,23 +74,5 @@ https://docs.firecrawl.dev/ai-onboarding#get-credentials
 
 ## Choose Your Path
 
-All paths use the same install above. The difference is what you do
-next.
+See [PATHS.md](PATHS.md) for full details on each path (A: live tools, B: app integration, C: workflow deliverables, D: account/API key setup, E: REST API directly).
 
-- **Need web data during this session** -> Path A (live tools)
-- **Need to add Firecrawl to app code** -> Path B (app integration)
-- **Need a finished deliverable from web data** -> Path C (workflow skills)
-- **Need more than one of the above** -> do them in sequence; the install already covers everything
-- **Agent platform with WorkOS ID-JAG** -> see Get Credentials above (not Path D)
-- **Need an account or API key (browser or CLI)** -> Path D
-- **Don't want to install anything** -> Path E (REST API directly)
-
-See [PATHS.md](PATHS.md) for full details on each path.
-
-## Session-specific auth
-
-Use this API key for this onboarding session:
-
-```dotenv
-FIRECRAWL_API_KEY=fc-ec9ba6e41be54c43a784761a3bb98b84
-```

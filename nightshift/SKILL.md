@@ -198,14 +198,14 @@ After the agent finishes, run tests in the worktree:
 cd "$WORKTREE_PATH" && $TEST_CMD
 ```
 
-- Tests pass AND `HEAD` differs from `$LAST_GOOD_SHA` → **success**. Move to step d.
+- Tests pass AND `HEAD` differs from `$LAST_GOOD_SHA` → **success**. Move to step e.
 - Tests pass but `HEAD` unchanged (agent didn't commit) → retryable attempt. Re-run with: "Tests passed but no commit was created. Stage and commit the scoped changes referencing #{number}. This is attempt {N}/3."
 - Tests fail, attempt < 3 → re-run the agent with: "Tests failed. Here's the output: {test output}. Fix the failing tests. This is attempt {N}/3." Retries are incremental — keep changes between attempts.
-- Tests fail, attempt = 3 → **failure**. Move to step e.
+- Tests fail, attempt = 3 → **failure**. Move to step f.
 
 **e. On success**
 
-Record the checkpoint SHA. Do NOT close the issue yet — defer until after push (step 4):
+Record the checkpoint SHA. Do NOT close the issue yet — defer until after push (step 5):
 
 ```bash
 LAST_GOOD_SHA=$(git -C "$WORKTREE_PATH" rev-parse HEAD)
@@ -317,7 +317,7 @@ After `/wrap` completes, append the QA todo to `~/repos/claude-os/todos/pending.
 - [ ] QA nightshift run for {project} — {N} completed, {M} need human — branch: nightshift/{date}
 ```
 
-### 10. Print summary
+### 9. Print summary
 
 ```
 nightshift complete for {repo}

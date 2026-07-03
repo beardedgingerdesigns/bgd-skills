@@ -1,13 +1,10 @@
 ---
 name: wiki
 description: >
-  Canonical project wiki curator. One skill for all wiki operations: bootstrap, convert, ingest, research, session wrap-up, lint, query, record decisions, and human-version.
-  The wiki skill is the only writer to curated pages — external producers stage to
-  raw/<source>/ and the wiki's ingest pipeline curates.
-  Trigger phrases: "log everything to the wiki", "wrap up the wiki", "update the wiki", "save this session to the wiki", "done hit the wiki", "set up project memory", "add a wiki", "build a knowledge base", "ingest these docs", "remember our decisions","ingest the raw files", "research X and save to the wiki", "research X for this project",
-  "lint the wiki", "what does the wiki say about X", "record this decision",
-  "convert this wiki", "bootstrap a wiki", "wiki health check", "make the wiki browsable", "human version", "docs site", "mkdocs", "onboard a coworker". Also triggers on /wiki, /wiki init, /wiki convert, /wiki ingest, /wiki research,
-  /wiki log, /wiki lint, /wiki query, /wiki decide, /wiki human-version.
+  Canonical project wiki curator — bootstrap, curate, query, and maintain a project wiki.
+  Use when the user wants to set up project memory, ingest docs, log a session, research and save findings,
+  record a decision, lint wiki health, query wiki content, convert existing docs, or make the wiki browsable.
+  Also triggers on /wiki and any /wiki subcommand.
 ---
 
 # /wiki — Project Wiki Curator
@@ -132,9 +129,6 @@ Exclude wiki internals from nav (WIKI-CLAUDE.md, log.md, raw/). Onboarding page 
 
 - Empty placeholder pages and premature folder taxonomies
 - Asking the user to fill out forms — you do the bookkeeping
-- Treating ingest as one-shot — ingest means integrating across all affected pages
 - Filing decisions without updating the pages they affect
 - Letting index.md drift from reality
 - Re-deriving the same synthesis every query — file it the second time
-- Writing to curated pages from outside this skill
-- Silently overwriting contested claims
