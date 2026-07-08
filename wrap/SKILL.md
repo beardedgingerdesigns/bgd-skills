@@ -51,6 +51,31 @@ Invoke `/wiki log` with the digest content.
 
 Write/update `{repo}/STATE.md` (in `claude-os`, `state/<slug>.md` for each project touched, not a root STATE.md): bump Updated date and Status, then Accomplishments / Current Status / Next Steps matching the existing format. Thin — state is a springboard, not a transcript.
 
+### 5b. Notify the AIOS (conditional — non-claude-os repos only)
+
+If the repo is NOT claude-os, drop a state-update envelope into the AIOS inbox so scheduled `/dispatch` can sync the springboard card (decision 2026-07-07). Skip silently inside claude-os (you just wrote `state/` directly).
+
+Write `~/repos/claude-os/archives/raw/state-update-YYYY-MM-DD-<slug>.md`:
+
+```markdown
+---
+type: state-update
+project: <slug>
+origin: <repo>/wrap
+date: YYYY-MM-DD
+---
+
+**Status:** {Enum} — {phase}
+
+<1-5 lines of delta — what changed this session, not a retelling>
+
+Next: <the top next steps>
+```
+
+- `project:` must be the `clients.yaml` project slug (check `~/repos/claude-os/clients.yaml` — it may differ from the repo folder name, e.g. repo `inside-out` → slug `inside-out-website`). If it doesn't resolve, use the repo folder name and note the mismatch in the envelope body.
+- Follow the `state/README.md` contract: status enum (`Active`/`Blocked`/`Waiting`/`Launching`/`Paused`/`Done`), absolute dates.
+- Delta only — no content payload. Nothing in this file should be worth ingesting anywhere else if misrouted.
+
 ### 6. Breadcrumb
 
 Append one line to `~/.claude/session-wrap.log` (feeds /retro):
@@ -62,7 +87,7 @@ Report: files written, decisions that should be logged (suggest `decisions/log.m
 
 ## Rules
 
-- Write directly to the current repo's wiki via `/wiki log`. Never write outside the current repo — one exception: business-level research (see step 3b). Cross-project context stays in the digest.
+- Write directly to the current repo's wiki via `/wiki log`. Never write outside the current repo — two exceptions, both drops into `claude-os/archives/raw/`: business-level research (step 3b) and the state-update envelope (step 5b). Cross-project context stays in the digest.
 - Honest struggles. A digest that says "everything went great" when the session churned for an hour poisons the retro loop.
 - Don't duplicate: if the session already wiki-logged its work (e.g. a /wiki log ran), note that in the breadcrumb and only fill gaps.
 

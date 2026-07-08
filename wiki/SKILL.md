@@ -1,15 +1,15 @@
 ---
 name: wiki
 description: >
-  Canonical project wiki curator — bootstrap, curate, query, and maintain a project wiki.
-  Use when the user wants to set up project memory, ingest docs, log a session, research and save findings,
-  record a decision, lint wiki health, query wiki content, convert existing docs, or make the wiki browsable.
+  Canonical project wiki curator — bootstrap, curate, and maintain a project wiki.
+  Use when the user wants to set up project memory, ingest docs, log a session,
+  lint wiki health, convert existing docs, or make the wiki browsable.
   Also triggers on /wiki and any /wiki subcommand.
 ---
 
 # /wiki — Project Wiki Curator
 
-One skill, nine modes. The single gateway for all wiki reads and writes.
+One skill, six modes. The single gateway for all wiki reads and writes.
 
 ## Ground Rules
 
@@ -21,6 +21,7 @@ One skill, nine modes. The single gateway for all wiki reads and writes.
 6. **Cite sources.** Every claim references its source page.
 7. **Cross-reference liberally.** Update index.md on every write.
 8. **Never silently overwrite contested claims.** Surface both versions, let the user decide.
+9. **File reusable synthesis.** When answering a question from wiki content and the synthesis is non-trivial, offer to file it as a new wiki page rather than re-deriving it next time.
 
 ## Write Safety
 
@@ -54,14 +55,11 @@ Resolve location in order: explicit path → `docs/wiki/WIKI-CLAUDE.md` → `wik
 | `/wiki init` | init |
 | `/wiki convert` | convert |
 | `/wiki ingest` | ingest |
-| `/wiki research` | research |
 | `/wiki log` | log |
 | `/wiki lint` | lint |
-| `/wiki query` | query |
-| `/wiki decide` | decide |
 | `/wiki human-version` | human-version |
 
-**Smart routing** (no args or natural language): pending `raw/` files → ingest. Session produced commits → log. Question about wiki content → query. "wrap up" / "done" → log. "we decided" → decide. "research X" → research. "health check" → lint. "browsable" / "onboard" / "mkdocs" → human-version.
+**Smart routing** (no args or natural language): pending `raw/` files → ingest. Session produced commits → log. Question about wiki content → query. "wrap up" / "done" → log. "health check" → lint. "browsable" / "onboard" / "mkdocs" → human-version.
 
 Announce the detected mode before proceeding so the user can redirect.
 
@@ -85,10 +83,6 @@ Never overwrite `raw/external/`. Re-runs stage alongside as `raw/external/<folde
 
 The core curation pipeline. Scan `raw/` for unprocessed files, process by authority level (see Source Authority above). Ingest means integrating — touching every page the source affects, not just creating one new page.
 
-### research — Web research staged for wiki
-
-Read existing wiki coverage first to avoid duplication. Search the web (Exa or Firecrawl), present source candidates, fetch selected sources, stage structured summaries to `raw/research/YYYY-MM-DD-<slug>.md`. Ask: "ingest now" or "stage only." Multiple rounds naturally build on prior findings.
-
 ### log — Session wrap-up
 
 Extract wiki-worthy knowledge from the current session and **write directly to curated pages** — this is the one mode that skips `raw/` staging because the agent IS the source.
@@ -100,14 +94,6 @@ Scan recent commits, conversation decisions, deferrals, architecture changes. Ca
 Nine checks: orphan pages, index gaps, dead links, stale claims, contradictions, missing cross-refs, raw/ orphans, lifecycle drift (decisions that should have moved status), log formatting.
 
 Apply Write Safety: auto-fix mechanical issues, flag ambiguous semantic ones for the user.
-
-### query — Answer from wiki
-
-Read-only. Find candidate pages from indexes, synthesize an answer, cite every claim. If the synthesis is non-trivial and reusable, offer to file it as a new wiki page.
-
-### decide — Record a decision
-
-Check `decisions/` for duplicates first. Substantive changes to an existing decision supersede it (move to `superseded/`), never edit in place. New decisions include: what, why, scope, cross-references, and a "do not relitigate without" trigger. Update every affected wiki page with cross-references.
 
 ### human-version — Browsable static site
 
@@ -122,6 +108,8 @@ Exclude wiki internals from nav (WIKI-CLAUDE.md, log.md, raw/). Onboarding page 
 ## Shared Behaviors
 
 **Every write-producing mode:** log the operation, update affected indexes, emit a receipt (files created/updated/skipped, flagged items), commit with `docs(wiki): <mode> — <summary>`.
+
+**OKF-minimal frontmatter on new pages (decision 2026-07-07):** every NEW curated page gets YAML frontmatter with at least `type:` and `timestamp:` (Open Knowledge Format v0.1 fields; add title/description/tags where useful; page-specific schemas like research notes keep their existing fields alongside). Never retrofit existing pages for format alone — existing wikis converge through normal churn. Full conversion of a wiki happens only on a consumer trigger (an OKF tool in the workflow, a client bundle export).
 
 **Staleness guard:** during any session work, catch obvious staleness inline (you just built the thing the wiki says is deferred). During `/wiki log`, run a broader sweep across all overview and decision pages.
 
