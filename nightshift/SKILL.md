@@ -18,10 +18,22 @@ Pull issues from GitHub, implement them AFK, report back to AIOS.
 ### 0. Pre-flight
 
 ```bash
-# Verify gh is authenticated and issues exist
+# Verify gh is authenticated
 gh auth status
-REPO=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
-ISSUES=$(gh issue list --label "ready-for-agent" --state open --json number,title,body,labels)
+
+# Resolve the target repo from the `origin` remote. Do NOT rely on gh's default
+# repo resolution: in a fork it prefers `upstream`, which would point every
+# issue operation at the wrong (often public) repo. Fall back to gh's default
+# only when there is no origin remote.
+ORIGIN_URL=$(git remote get-url origin 2>/dev/null)
+if [ -n "$ORIGIN_URL" ]; then
+  REPO=$(gh repo view "$ORIGIN_URL" --json nameWithOwner -q '.nameWithOwner')
+else
+  REPO=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
+fi
+
+# Every gh issue command below passes --repo "$REPO" for the same reason.
+ISSUES=$(gh issue list --repo "$REPO" --label "ready-for-agent" --state open --json number,title,body,labels)
 ```
 
 If no issues found, report "Queue empty — nothing to do" and stop.
@@ -38,6 +50,8 @@ elif [ -f "Makefile" ] && grep -q '^test:' Makefile; then
   TEST_CMD="make test"
 elif [ -f "pytest.ini" ] || [ -f "pyproject.toml" ]; then
   TEST_CMD="pytest"
+elif [ -f "composer.json" ] && grep -q '"test"' composer.json; then
+  TEST_CMD="composer test"
 else
   echo "No test command detected. Nightshift requires a runnable test suite. Aborting."
   exit 1
@@ -53,7 +67,7 @@ Parse each issue body for a `Blocked by` section. Extract referenced issue numbe
 For every referenced blocker, check its actual state:
 
 ```bash
-gh issue view $BLOCKER_NUMBER --json state -q '.state'
+gh issue view $BLOCKER_NUMBER --repo "$REPO" --json state -q '.state'
 ```
 
 - An issue is **ready** if all its blockers are `CLOSED` (including issues closed earlier in this run)
@@ -85,6 +99,18 @@ if git rev-parse --verify "$BRANCH" >/dev/null 2>&1 || [ -e "$WORKTREE_PATH" ]; 
 fi
 
 git worktree add -b "$BRANCH" "$WORKTREE_PATH" HEAD
+
+# Prepare dependencies: a fresh worktree lacks gitignored dependency dirs
+# (composer vendor/, node_modules/), so tests can't run until they're present.
+# Install them IN the worktree. Do NOT symlink vendor/ from the repo root —
+# tools like Pest/PHPUnit derive test namespaces from realpath and choke on a
+# symlinked vendor pointing outside the worktree.
+if [ -f "$WORKTREE_PATH/composer.json" ] && [ ! -d "$WORKTREE_PATH/vendor" ]; then
+  (cd "$WORKTREE_PATH" && composer install --no-interaction --no-progress) || true
+fi
+if [ -f "$WORKTREE_PATH/package.json" ] && [ ! -d "$WORKTREE_PATH/node_modules" ]; then
+  (cd "$WORKTREE_PATH" && { npm ci 2>/dev/null || npm install; }) || true
+fi
 
 # Initialize per-run log
 mkdir -p "$REPO_ROOT/nightshift-runs"
@@ -153,7 +179,7 @@ Skip this check for the first issue in the run (the worktree was just created fr
 
 **b. Label in-progress**
 ```bash
-gh issue edit $NUMBER --add-label "in-progress" --remove-label "ready-for-agent"
+gh issue edit $NUMBER --repo "$REPO" --add-label "in-progress" --remove-label "ready-for-agent"
 ```
 
 **c. Build the prompt**
@@ -180,17 +206,39 @@ You are implementing a single issue in an existing codebase.
 - Do NOT modify files outside the scope of this issue
 - After completing the issue, APPEND to progress.md: what would help the next issue? (patterns found, gotchas, files created, architectural decisions). Not a status update — context for the next agent.
 - If you discover something broken or wrong that is NOT part of this issue, APPEND it to fix_plan.md instead of fixing it. Do not scope-creep. One item per entry: title + 1-2 lines of context.
+- Log your findings to the issue as a comment: `gh issue comment {number} --repo {repo} --body "<what you did, what you found, anything the reviewer should know>"`. Always pass `--repo {repo}` (gh's default repo may resolve to a fork's upstream).
+- Do NOT close the issue and do NOT change its labels — the orchestrator verifies the work and closes it. Your job is to implement, commit, and report findings.
 - If you get stuck after multiple attempts, explain what's blocking you and stop
 ```
 
 **d. Run the agent (up to 3 attempts)**
 
+Select the agent's model from the issue's `model:<name>` label (e.g. `model:opus` → `opus`); fall back to the CLI default when no such label is present. The `claude` CLI `--model` accepts the `fable`/`opus`/`sonnet` aliases directly. Record the choice in the run log so model adherence is auditable after the fact.
+
 ```bash
-(cd "$WORKTREE_PATH" && claude --print \
-  --permission-mode bypassPermissions \
-  --verbose \
-  "$PROMPT")
+# Model delegation: read the issue's model:<name> label (first one wins).
+MODEL=$(gh issue view "$NUMBER" --repo "$REPO" --json labels \
+  -q '[.labels[].name | select(startswith("model:")) | ltrimstr("model:")][0] // ""')
+echo "Issue #$NUMBER — agent model: ${MODEL:-<cli default>}" >> "$RUN_LOG"
+
+# Pass --model as its own argument. Do NOT build an unquoted "$FLAG" string:
+# zsh (the likely shell here) does not word-split unquoted expansions, so
+# "--model fable" would arrive as a single invalid option.
+# Capture the agent's final message into $AGENT_OUTPUT for the run-log record
+# and orchestrator debugging. (The agent posts its OWN findings comment to the
+# issue per step c; the orchestrator does not re-post it.) --verbose is omitted
+# so the capture is the clean summary rather than the streamed trace.
+if [ -n "$MODEL" ]; then
+  AGENT_OUTPUT=$(cd "$WORKTREE_PATH" && claude --print --model "$MODEL" \
+    --permission-mode bypassPermissions "$PROMPT")
+else
+  AGENT_OUTPUT=$(cd "$WORKTREE_PATH" && claude --print \
+    --permission-mode bypassPermissions "$PROMPT")
+fi
+printf '%s\n' "$AGENT_OUTPUT" > "$REPO_ROOT/nightshift-runs/agent-${NUMBER}-${RUN_ID}.log"
 ```
+
+Use the same `--model "$MODEL"` form on the retry invocations so retries stay on the delegated model.
 
 After the agent finishes, run tests in the worktree:
 
@@ -203,13 +251,20 @@ cd "$WORKTREE_PATH" && $TEST_CMD
 - Tests fail, attempt < 3 → re-run the agent with: "Tests failed. Here's the output: {test output}. Fix the failing tests. This is attempt {N}/3." Retries are incremental — keep changes between attempts.
 - Tests fail, attempt = 3 → **failure**. Move to step f.
 
-**e. On success**
+**e. On success — orchestrator verifies and closes**
 
-Record the checkpoint SHA. Do NOT close the issue yet — defer until after push (step 5):
+Separation of duties: the task agent implemented, committed, and posted its own findings comment (step c). The orchestrator now VERIFIES the work landed (tests passed in step d, HEAD advanced) and CLOSES the issue. The orchestrator is the only actor that closes issues or changes their labels.
 
 ```bash
 LAST_GOOD_SHA=$(git -C "$WORKTREE_PATH" rev-parse HEAD)
-gh issue edit $NUMBER --remove-label "in-progress"
+gh issue edit $NUMBER --repo "$REPO" --remove-label "in-progress"
+
+# Push the run branch so the work is on origin before we close.
+git -C "$WORKTREE_PATH" push -u origin "$BRANCH"
+
+# Orchestrator closes with a verification note (the agent's findings are
+# already on the issue from step c). Always pass --repo.
+gh issue close $NUMBER --repo "$REPO" --comment "Verified + closed by nightshift orchestrator — run \`$RUN_ID\`, tests green, branch \`$BRANCH\` @ $(git -C "$WORKTREE_PATH" rev-parse --short HEAD). QA + merge the branch."
 COMPLETED_ISSUES+=("$NUMBER")
 ```
 
@@ -227,8 +282,8 @@ git -C "$WORKTREE_PATH" diff >> "$RUN_LOG"
 git -C "$WORKTREE_PATH" reset --hard "$LAST_GOOD_SHA"
 git -C "$WORKTREE_PATH" clean -fd
 
-gh issue edit $NUMBER --add-label "needs-human" --remove-label "in-progress"
-gh issue comment $NUMBER --body "nightshift: failed after 3 attempts.
+gh issue edit $NUMBER --repo "$REPO" --add-label "needs-human" --remove-label "in-progress"
+gh issue comment $NUMBER --repo "$REPO" --body "nightshift: failed after 3 attempts.
 
 **Last error:**
 {test output or agent's final message}
@@ -241,21 +296,15 @@ Log: `echo "✗ #${NUMBER}: ${TITLE} — needs-human" >> "$RUN_LOG"`
 
 Continue to the next issue.
 
-### 5. Cleanup worktree
+### 5. Finalize the branch
 
-After all issues are processed:
+Each completed issue is already pushed, commented, and closed per-issue in step e. Do a final push to catch any tail commits, and report if nothing was committed:
 
 ```bash
-# If any commits were made, push the branch then close completed issues
 if [ "$(git -C "$WORKTREE_PATH" rev-parse HEAD)" != "$BASE_SHA" ]; then
   git -C "$WORKTREE_PATH" push -u origin "$BRANCH"
-
-  # Close issues directly after successful push — no subprocess needed.
-  for NUMBER in "${COMPLETED_ISSUES[@]}"; do
-    gh issue close "$NUMBER" --comment "Implemented by nightshift run $RUN_ID. Branch: $BRANCH"
-  done
 else
-  echo "No commits made — skipping push and issue closure."
+  echo "No commits made — nothing pushed, no issues closed."
 fi
 ```
 
@@ -265,7 +314,7 @@ Read `fix_plan.md`. If it has entries beyond the initial header, auto-file each 
 
 ```bash
 # For each entry in fix_plan.md, create a GitHub issue
-gh issue create \
+gh issue create --repo "$REPO" \
   --title "nightshift-discovered: {entry title}" \
   --body "{entry context}
 
@@ -346,9 +395,9 @@ Uses Matt Pocock's triage vocabulary:
 
 Ensure these labels exist in the repo. If missing, create them:
 ```bash
-gh label create "ready-for-agent" --color "0E8A16" --description "Ready for AFK agent implementation" 2>/dev/null
-gh label create "in-progress" --color "FBCA04" --description "Agent is working on this" 2>/dev/null
-gh label create "needs-human" --color "D93F0B" --description "Agent couldn't solve — needs human review" 2>/dev/null
+gh label create "ready-for-agent" --repo "$REPO" --color "0E8A16" --description "Ready for AFK agent implementation" 2>/dev/null
+gh label create "in-progress" --repo "$REPO" --color "FBCA04" --description "Agent is working on this" 2>/dev/null
+gh label create "needs-human" --repo "$REPO" --color "D93F0B" --description "Agent couldn't solve — needs human review" 2>/dev/null
 ```
 
 ## What this skill does NOT do
