@@ -1,12 +1,26 @@
 ---
 name: firecrawl
 description: >
-  Firecrawl web data tools — CLI scraping, app integration, and workflow deliverables.
-  Use when the user wants to install Firecrawl, scrape with the Firecrawl CLI, add Firecrawl to app code,
-  or produce deliverables from web data. Also triggers on /firecrawl.
+  Firecrawl web data tools — MCP-first (mcp__firecrawl__* tools, authenticated), with CLI,
+  app integration, and workflow deliverables as fallbacks. Use when the user wants to scrape,
+  search, or crawl with Firecrawl, add Firecrawl to app code, or produce deliverables from
+  web data. Also triggers on /firecrawl.
 ---
 
 # Firecrawl
+
+## Use the MCP first
+
+The Firecrawl MCP server is connected and authenticated in this environment (verified 2026-07-10).
+**Default to the `mcp__firecrawl__*` tools** — `firecrawl_scrape`, `firecrawl_search`, `firecrawl_crawl`, `firecrawl_extract`, `firecrawl_map`, etc. No API key handling, no install step.
+
+Only drop below the MCP when:
+
+- **MCP is not connected** in the current session → CLI (install below)
+- **Shipping Firecrawl into app code** → Build skills + SDK with `FIRECRAWL_API_KEY` (that's product code, not this session)
+- **CLI-only features** the MCP doesn't expose
+
+Everything below this line is for those fallback cases.
 
 ## Install
 
