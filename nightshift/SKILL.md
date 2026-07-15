@@ -184,6 +184,17 @@ gh issue edit $NUMBER --repo "$REPO" --add-label "in-progress" --remove-label "r
 
 **c. Build the prompt**
 
+Fetch the issue's comment thread. **The body alone is not the spec.** A ticket that was
+`needs-human` and got flipped to `ready-for-agent` almost always carries its answer in a
+comment while the body still poses the question — the human replies in the thread and
+nobody rewrites the body. Passing body-only makes the agent read a stale open question,
+then stall or guess. Comments also carry a prior attempt's findings on a re-run.
+
+```bash
+COMMENTS=$(gh issue view "$NUMBER" --repo "$REPO" --json comments \
+  -q '.comments[] | "--- @\(.author.login) (\(.createdAt[0:10])):\n\(.body)\n"')
+```
+
 Assemble the agent prompt:
 
 ```
@@ -197,6 +208,14 @@ You are implementing a single issue in an existing codebase.
 
 ## Issue #{number}: {title}
 {issue body}
+
+## Discussion and decisions
+{$COMMENTS — omit this section when the issue has none}
+
+The body states the problem as first filed; the comments carry what was decided since.
+Where they conflict, LATER COMMENTS WIN — a body that still asks an open question the
+thread already answered is stale, not a blocker. Read the whole thread before starting,
+and follow any scope, option, or approach the thread settles on.
 
 ## Instructions
 - Read CLAUDE.md for project conventions
