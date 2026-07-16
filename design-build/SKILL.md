@@ -55,11 +55,45 @@ Implement visual effects from the blueprint. Use Three.js, CSS animation, Framer
 
 **Completion:** site builds and runs.
 
-## Step 4 — Show it
+## Step 4 — Write the polish handoff
+
+`/impeccable` is the post-build polish tool, and its preflight requires `PRODUCT.md`
+(and strongly prefers `DESIGN.md`) at the project root. Without them it stops and runs
+`$impeccable teach` to interview its way to context you already have. Write both files
+now — mechanically, from the two documents you just built from. No new decisions.
+
+**`PRODUCT.md`** — derive from `COMPETITOR-RESEARCH.md` + the blueprint:
+- `register: brand` — BGD builds marketing sites; design IS the product. Set it explicitly.
+- Users / audience → from the research brief
+- Brand + tone → from the blueprint's Direction line
+- Anti-references → the blueprint's **Do Not Use For** + Don't rules + the anti-patterns
+  from the research's loser analysis
+- Strategic principles → the winner patterns
+
+**`DESIGN.md`** — this is a straight restatement of the blueprint's system sections:
+Color System (with hex), Typography (with families and scale), Spacing, Design System
+Variables, Component Kit, elevation/radius/shadow.
+
+Must clear impeccable's own gate: >200 chars, no `[TODO]` markers, no placeholders.
+
+Then run `node ~/.claude/skills/impeccable/scripts/load-context.mjs` to confirm both
+resolve (`hasProduct: true`, `hasDesign: true`). Note the path — impeccable's SKILL.md
+documents a `.agents/skills/…` loader path that does not exist on this machine.
+
+This makes the polish family (`polish`, `critique`, `audit`, `distill`, `harden`,
+`typeset`, `colorize`, `quieter`, `bolder`) work on the built site with zero setup —
+and, more importantly, makes it polish *toward the blueprint* instead of toward its own
+taste. Never run `$impeccable craft` or `shape` on a pipeline-built site: those are a
+competing extraction stage, and extraction already happened with evidence.
+
+**Completion:** both files written, loader confirms both resolve.
+
+## Step 5 — Show it
 
 Start the dev server. Tell the user:
 
 - It's running — go look at it
+- `PRODUCT.md` + `DESIGN.md` are written — `/impeccable polish` works immediately, no setup
 - What was generated vs. what needs replacing (AI images, drafted copy)
 - Anything that deviated from the blueprint and why
 
