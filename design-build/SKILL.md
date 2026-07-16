@@ -36,11 +36,15 @@ If everything is answered by the documents and codebase, skip this step entirely
 
 Build the entire site in one pass. Follow the blueprint:
 
-- Set up design tokens first (fonts, colors, spacing from the blueprint).
+- Set up design tokens first — use the exact names from the blueprint's **Design System Variables**. Don't rename them.
 - Follow the Page Structure section top to bottom.
 - Snap in components from the Component Kit, modify per the blueprint's style rules.
-- Respect the Do/Don't rules.
-- Draft copy from competitor research patterns if the user didn't provide it. Mark drafted copy with a comment so they know what to review.
+- Respect the Do/Don't rules and the **Do Not Use For** line.
+- Draft copy from competitor research patterns if the user didn't provide it. Mark drafted copy with a comment so they know what to review. No fake round numbers (`99.99%`, `50%`) — use organic values (`47.2%`, `$99.00`). Zero em-dashes.
+
+**No truncation.** This is a long build and the failure mode is stubbing the back half. Never emit `// ...`, `// rest of code`, `// TODO`, `/* ... */`, `// similar to above`, `// continue pattern`, or a bare `...` in place of real implementation. Section 8 gets the same effort as section 1. If you genuinely hit a token ceiling, stop at a clean file boundary and say `[PAUSED — X of Y sections complete]` rather than shipping skeletons.
+
+**Self-check before you show it.** The blueprint's **Implementation Checklist** is the contract you just agreed to. Walk it and fix what fails. Stage 4 verifies it independently, but don't hand it slop.
 
 Generate assets as needed:
 - `mcp__higgsfield__generate_image` — product shots, hero imagery, textures. Prompt with the blueprint's color palette and style notes.

@@ -53,7 +53,15 @@ Cross-reference with Refero for deeper pattern context:
 
 Where multiple inspiration sites conflict (one uses serif, another sans-serif), note both and resolve toward the client's brand constraints from Step 1. If no brand exists, pick the pattern the winner research supports.
 
-**Completion:** design identity extracted from every inspiration site, conflicts resolved, Refero references collected.
+Then run the three gates in [`BLUEPRINT-TEMPLATE.md`](BLUEPRINT-TEMPLATE.md) against what you extracted:
+
+1. **Category reflex** — could you have guessed this palette or font from the niche name alone? If yes, you stopped reading the evidence. Rework it.
+2. **Banned palette** — none of the listed premium-consumer hex values survive. Rotate to one of the seven families, and not the one the last project used.
+3. **Font reflex** — anything on the reflex-reject list needs a written reason to survive.
+
+The gates outrank your instinct, not the evidence. If a scraped winner genuinely uses a banned font well, say so and keep it — but you don't inherit it by default.
+
+**Completion:** design identity extracted from every inspiration site, conflicts resolved, Refero references collected, all three gates passed with the reflex-check lines written.
 
 ## Step 4 — Select components
 
@@ -73,90 +81,25 @@ Target 4-8 components. Enough to define the feel, not so many the build agent dr
 
 ## Step 5 — Write the blueprint
 
-Write `DESIGN-BLUEPRINT.md` in the project root (or user-specified path). Structure:
+Write `DESIGN-BLUEPRINT.md` in the project root (or user-specified path), following the
+template in [`BLUEPRINT-TEMPLATE.md`](BLUEPRINT-TEMPLATE.md). Copy the TEMPLATE section
+and fill every field. The `▸ REFERENCE` sections are your source for real values —
+the 4pt spacing scale, the easing curves and duration table, the named background modes,
+the color-commitment axis. Don't invent values the reference already fixes.
 
-```markdown
-# Design Blueprint: [Project Name]
+Three sections carry the most weight and are the easiest to fudge:
 
-## Source
-- Competitor research: [path to COMPETITOR-RESEARCH.md]
-- Inspiration sites: [URLs]
-- Brand guidelines: [source or "none — derived from research"]
+- **Design System Variables** — token names get decided here, not at build time. This is
+  the cleanest expression of "the build executes rather than interprets."
+- **Do Not Use For** — a direction defined partly by its exclusions is much harder to
+  drift from than one defined only by what it is.
+- **Implementation Checklist** — the blueprint carries its own verification. The build
+  self-checks against it, and stage 4 verifies it independently.
 
-## Typography
-- Headings: [font family], [weights used], [scale: h1 → h6 sizes]
-- Body: [font family], [size], [line-height], [weight]
-- Accent/display: [if any]
-- Font loading: [Google Fonts URL or local files]
-
-## Color System
-- Primary: [hex] — [where used]
-- Secondary: [hex] — [where used]
-- Accent: [hex] — [where used]
-- Background: [hex]
-- Surface: [hex] — cards, elevated elements
-- Text: [hex primary], [hex muted]
-- Border: [hex]
-
-## Spacing & Layout
-- Content max-width: [px]
-- Section padding: [vertical], [horizontal]
-- Element gap: [standard spacing unit]
-- Grid: [columns, gutter]
-
-## Visual Style
-- Imagery: [photography / illustration / abstract / AI-generated — treatment notes]
-- Border radius: [px]
-- Shadow style: [description or CSS values]
-- Background patterns: [gradients, textures, or clean]
-
-## Animation & Interaction
-- Style: [subtle / bold / minimal]
-- Triggers: [scroll / hover / load]
-- Speed: [fast / medium / deliberate]
-- Specific effects: [parallax, fade-in, slide-up, etc.]
-
-## Awwwards Research
-[3-5 award-winning references with notes on techniques used and what's worth adopting]
-
-## Visual Effects
-[Recommended effects based on Awwwards research and identity extraction.]
-[For each: what effect, where it goes, why it fits, and a simpler fallback.]
-[Only if the research supports it. "None — clean execution is the effect" is a valid answer.]
-
-## Component Kit
-[For each selected component:]
-### [Component name] — [placement]
-- Source: [URL]
-- Modifications: [color, font, size adjustments]
-- Purpose: [what it does in the page]
-
-## Asset Requirements
-[What the build agent needs to generate or source. For each:]
-- What: [hero product shot, background texture, product rotation video, etc.]
-- Placement: [where in the page]
-- Style notes: [color palette, mood, treatment — enough for Higgsfield prompting]
-- Source: [AI-generated / client-provided / stock — recommendation]
-
-## Page Structure
-[Section order from top to bottom, one line each:]
-1. [Nav] — [style notes]
-2. [Hero] — [approach: product shot / video / text-led]
-3. [Social proof bar] — [logos / stats / testimonial]
-...
-
-## Do / Don't
-### Do
-- [Specific positive rules derived from the extraction]
-
-### Don't
-- [Specific negative rules from client constraints + anti-patterns from research]
-
-## Refero References
-[Screen/flow references with annotation: what pattern, why included]
-```
-
-**Completion:** blueprint written with every section filled. Typography has actual font names. Colors have actual hex values. Components have actual URLs. Nothing says "TBD" or "choose later."
+**Completion:** every field filled. Typography has real font names and a written reflex
+check. Colors have real hex values and a written reflex check. Components have real URLs.
+Motion has real cubic-beziers and durations, not "subtle fade-up." Assets name a background
+mode from the reference list, not free text. Nothing says "TBD" or "choose later."
 
 ## Step 6 — Handoff
 
