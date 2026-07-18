@@ -96,5 +96,6 @@ Start the dev server. Tell the user:
 - `PRODUCT.md` + `DESIGN.md` are written — `/impeccable polish` works immediately, no setup
 - What was generated vs. what needs replacing (AI images, drafted copy)
 - Anything that deviated from the blueprint and why
+- Next step: `/design-verify` to check the build against the blueprint, then `/impeccable polish` for the subjective pass
 
 Then stop. The user drives refinement from here.
