@@ -104,7 +104,7 @@ python3 scripts/wiki-lint.py --report state/wiki-lint.md          # read-only
 python3 scripts/wiki-lint.py --report state/wiki-lint.md --fix    # + backfill + tier-3 escalation
 ```
 
-Read-only by default; `--fix` applies the confidence backfill and appends tier-3 findings to the wiki's `open-questions.md` (deduped). Commit both with a receipt (`docs(wiki): lint auto-fix — <n> pages`). Tier-2 findings ship a drafted correction, never auto-applied — apply the unambiguous ones yourself, and remember the direction: the operational layer wins over the wiki, and between two wiki pages the *lower*-confidence side gets corrected.
+Read-only by default; `--fix` applies the confidence backfill and appends tier-3 findings to the wiki's `open-questions.md` (deduped). Commit both with a receipt (`docs(wiki): lint auto-fix — <n> pages`) — keep the words `lint auto-fix` in the subject, the next run excludes those commits from its edited-pages window so a bulk backfill doesn't look like 91 hand edits. Tier-2 findings ship a drafted correction, never auto-applied — apply the unambiguous ones yourself, and remember the direction: the operational layer wins over the wiki, and between two wiki pages the *lower*-confidence side gets corrected.
 
 The script only reaches what's mechanizable. Work the rest by hand in the same sweep: priorities and decisions claims against `context/priorities.md` and `decisions/log.md`, and value drift in prose (a figure quoted for a client that `clients.yaml` contradicts — the script deliberately doesn't guess, since pricing prose quotes numbers for a dozen honest reasons). Anything you can't adjudicate goes to `open-questions.md`, not into the report.
 
