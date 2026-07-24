@@ -43,9 +43,24 @@ If the session was research-shaped — an external video/article/transcript disc
 
 If the session had no research flavor, skip silently.
 
+### 3c. Park open questions
+
+Take the digest's **Open questions** section (step 3). If it says "none" or is empty, skip silently —
+no receipt, no file touch.
+
+- Wiki exists → append each unanswered question to `{repo}/docs/wiki/open-questions.md`, using the
+  entry format documented in that file (bold question, then `Added` / `Source` / optional `Client` /
+  optional `Context`). Create the file first (same header as claude-os's copy) if this repo doesn't
+  have one yet. `Source: wrap`.
+- No wiki → skip (nothing to park).
+- Repo is NOT claude-os AND a question is business-level (BGD strategy, pricing, market — not
+  implementation detail) → also drop a copy for AIOS, same mechanism as step 5b:
+  `~/repos/claude-os/archives/raw/open-question-YYYY-MM-DD-<slug>.md` with `type: open-question`
+  frontmatter, for `/dispatch` to route into claude-os's own `open-questions.md`.
+
 ### 4. Write to the wiki
 
-Invoke `/wiki log` with the digest content.
+Invoke `/wiki log` with the digest content. Provenance stamping (ADR 0010 §5): new/edited pages default `confidence: inferred` — `/wrap` is the agent synthesizing the session, not a human or source directly stating the claim. Bump to `verified` only if the content restates an authority surface (`state/`, `decisions/log.md`, `context/priorities.md`, `clients.yaml`) or Justin confirmed it in-session; never auto-mint `verified` otherwise.
 
 ### 5. Update state
 

@@ -141,6 +141,29 @@ EOF
 
 All issues commit sequentially to this one branch. Later issues see earlier work. The `progress.md` file accumulates learnings across issues — each agent session reads it for context and appends after completing its issue.
 
+### 2.5 Model triage
+
+Before dispatching anything, audit the whole batch and give every issue a model label. An existing `model:<name>` label is a human override — never change or second-guess it.
+
+For each issue in `$ISSUES` without a `model:` label, digest the task — full title, body, and acceptance criteria; what the work *demands*, not how long it looks — then apply exactly one label:
+
+| Label | Assign when |
+|---|---|
+| `model:haiku` | Mechanical: the ticket spells out exactly what to produce, success is checklist-verifiable, zero design judgment |
+| `model:sonnet` | Standard implementation: clear acceptance criteria, contained blast radius, established patterns to follow |
+| `model:opus` | Judgment-heavy: ambiguous spec, cross-cutting changes, design decisions, or subtle-correctness territory (concurrency, migrations, security) |
+
+`model:fable` is never auto-assigned — only a human puts it on an issue.
+
+When torn between two tiers, take the higher: a failed cheap run costs more than the model delta (3 attempts + a needs-human roundtrip).
+
+```bash
+gh issue edit "$NUMBER" --repo "$REPO" --add-label "model:sonnet"
+echo "Issue #$NUMBER — model triage: sonnet (<one-line why>)" >> "$RUN_LOG"
+```
+
+The one-line why goes in the run log, so morning review can audit the calls without re-reading every ticket.
+
 ### 3. Signal AIOS
 
 Write a lightweight state entry so `/brief` and morning sessions know a nightshift is running (or ran and died):
@@ -232,7 +255,7 @@ and follow any scope, option, or approach the thread settles on.
 
 **d. Run the agent (up to 3 attempts)**
 
-Select the agent's model from the issue's `model:<name>` label (e.g. `model:opus` → `opus`); fall back to the CLI default when no such label is present. The `claude` CLI `--model` accepts the `fable`/`opus`/`sonnet` aliases directly. Record the choice in the run log so model adherence is auditable after the fact.
+Select the agent's model from the issue's `model:<name>` label (e.g. `model:opus` → `opus`); after step 2.5's triage every issue should have one, but fall back to the CLI default when no such label is present. The `claude` CLI `--model` accepts the `fable`/`opus`/`sonnet` aliases directly. Record the choice in the run log so model adherence is auditable after the fact.
 
 ```bash
 # Model delegation: read the issue's model:<name> label (first one wins).
@@ -411,12 +434,16 @@ Uses Matt Pocock's triage vocabulary:
 | `ready-for-agent` | Input: issue is ready for AFK implementation |
 | `in-progress` | Agent is actively working on this issue |
 | `needs-human` | Output: agent couldn't solve it in 3 attempts |
+| `model:haiku` / `model:sonnet` / `model:opus` | Which model implements the issue — assigned by step 2.5's triage, or by a human (human labels always win; `model:fable` is human-only) |
 
 Ensure these labels exist in the repo. If missing, create them:
 ```bash
 gh label create "ready-for-agent" --repo "$REPO" --color "0E8A16" --description "Ready for AFK agent implementation" 2>/dev/null
 gh label create "in-progress" --repo "$REPO" --color "FBCA04" --description "Agent is working on this" 2>/dev/null
 gh label create "needs-human" --repo "$REPO" --color "D93F0B" --description "Agent couldn't solve — needs human review" 2>/dev/null
+gh label create "model:haiku" --repo "$REPO" --color "C5DEF5" --description "Implement with haiku" 2>/dev/null
+gh label create "model:sonnet" --repo "$REPO" --color "C5DEF5" --description "Implement with sonnet" 2>/dev/null
+gh label create "model:opus" --repo "$REPO" --color "C5DEF5" --description "Implement with opus" 2>/dev/null
 ```
 
 ## What this skill does NOT do
