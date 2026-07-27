@@ -4,15 +4,18 @@ Claude Code session guidance for the application-level knowledge wiki at [docs/w
 
 This wiki's primary subject is **{{PROJECT_NAME}}** — {{PROJECT_DESCRIPTION}}. {{SCOPE_NOTE}}
 
-## Working Memory Protocol
+## Conventions
 
-**At the start of every session:**
+- **Reading is not governed here.** Session orientation lives in this repo's agent-instruction file under "Project memory" (instantiated from the `/wiki` skill's `CLAUDE-MEMORY-BLOCK.md`). This file governs writes only — read it before writing, never to get oriented. Two read protocols drift; pointer-not-copy forbids it.
+- **Memory is not authority.** Answer project-specific questions from this wiki, not from session recall; name the page used; if no page answers it, say so and label the inference.
+- **Schema** — `schema.md` at this wiki root is the frontmatter authority (required keys, closed type vocabulary, provenance tags). Lint reads it directly; never hand-mirror its rules here.
+- **Supersedence** — when a page's conclusion reverses (it asserted X, now asserts not-X, and acting on remembered X would be wrong), retire the old claim into a dated `## Superseded` block at the bottom rather than deleting it or leaving it live. Additive content, rephrasing, and always-wrong corrections are ordinary edits.
+- **Pointer, not copy** — a page must not restate a fact whose canonical home is elsewhere; it links it instead.
+- **Soft line budget** — curated pages target ~120 lines (a lint nudge, never a gate). `raw/` and `notes/` are exempt.
+- **Open questions** — known unknowns live in `open-questions.md` at this wiki root, fed by mid-session gaps, lint escalations, and `/wrap`.
+- **Provenance** — stamp `source` and `confidence` at write time (`/wiki ingest` at promotion; `/wrap` and `/dispatch` default `inferred`). `verified` only when the operator confirms in-session or the claim restates an authority surface. Three values, no more: they exist to separate verified fact from reported information from inference.
 
-1. Tail the log: `ls docs/wiki/log/ | sort -r | head -10` — gives the last 10 ingest events.
-2. Read [decisions/index.md](decisions/index.md) — list of currently-locked decisions.
-3. If the work touches a known topic, drill into the matching `decisions/active/*.md` file before changing code.
-
-Auto-memory at `{{MEMORY_PATH}}` is the **pointer layer** — `MEMORY.md` lists wiki destinations with one-sentence "why this matters at session start" summaries. The wiki itself is the canonical store.
+Auto-memory at `{{MEMORY_PATH}}` is the **pointer layer** — `MEMORY.md` lists wiki destinations with one-sentence "why this matters" summaries. The wiki itself is the canonical store.
 
 ## Wiki operations
 

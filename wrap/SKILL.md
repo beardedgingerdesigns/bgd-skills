@@ -60,7 +60,9 @@ no receipt, no file touch.
 
 ### 4. Write to the wiki
 
-Invoke `/wiki log` with the digest content. Provenance stamping (ADR 0010 §5): new/edited pages default `confidence: inferred` — `/wrap` is the agent synthesizing the session, not a human or source directly stating the claim. Bump to `verified` only if the content restates an authority surface (`state/`, `decisions/log.md`, `context/priorities.md`, `clients.yaml`) or Justin confirmed it in-session; never auto-mint `verified` otherwise.
+Invoke `/wiki log` with the digest content. **`/wiki log` is the only reader of the wiki's filing rules** — it reads `WIKI-CLAUDE.md` and `schema.md`; `/wrap` never does and must not grow a second copy of them. `/wrap` uses `WIKI-CLAUDE.md` only as the marker that a wiki exists (step 1).
+
+Provenance stamping (ADR 0010 §5): new/edited pages default `confidence: inferred` — `/wrap` is the agent synthesizing the session, not a human or source directly stating the claim. Bump to `verified` only if the content restates an authority surface (`state/`, `decisions/log.md`, `context/priorities.md`, `clients.yaml`) or Justin confirmed it in-session; never auto-mint `verified` otherwise.
 
 ### 5. Update state
 

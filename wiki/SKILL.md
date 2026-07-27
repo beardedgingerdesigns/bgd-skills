@@ -69,13 +69,19 @@ Announce the detected mode before proceeding so the user can redirect.
 
 ### init — Bootstrap a new wiki
 
-Discover project context (README, CLAUDE.md, package.json, git log), ask 2-3 setup questions (project name, exclusions, seed decisions), scaffold the canonical layout using `~/.claude/skills/wiki/assets/WIKI-CLAUDE-TEMPLATE.md` plus `~/.claude/skills/wiki/assets/schema-TEMPLATE.md` (as `schema.md` at the wiki root — the frontmatter/lint authority, ADR 0010 §8) and `~/.claude/skills/wiki/assets/open-questions-TEMPLATE.md` (as `open-questions.md` at the wiki root — ADR 0010 §4), seed index + overview + first log entry, add wiki pointer to CLAUDE.md if it exists.
+Discover project context (README, CLAUDE.md, package.json, git log), ask 2-3 setup questions (project name, exclusions, seed decisions), scaffold the canonical layout using `~/.claude/skills/wiki/assets/WIKI-CLAUDE-TEMPLATE.md` plus `~/.claude/skills/wiki/assets/schema-TEMPLATE.md` (as `schema.md` at the wiki root — the frontmatter/lint authority, ADR 0010 §8) and `~/.claude/skills/wiki/assets/open-questions-TEMPLATE.md` (as `open-questions.md` at the wiki root — ADR 0010 §4), seed index + overview + first log entry.
+
+**Then write the memory block into the repo's root `CLAUDE.md`** — instantiate `~/.claude/skills/wiki/assets/CLAUDE-MEMORY-BLOCK.md` per its instantiation table, creating `CLAUDE.md` if absent. This is not a "pointer"; it is the repo's whole read contract. Scan for a sibling knowledge store (`docs/solutions/`, or any `docs/<dir>/` that isn't the wiki) and seed the Area read table from it. Never emit a pointer to a file that doesn't exist.
+
+Reading is governed by `CLAUDE.md` alone. `WIKI-CLAUDE.md` governs writes and must never carry a session-orientation protocol — two read protocols drift, and pointer-not-copy forbids it.
 
 If existing docs are found, suggest `/wiki convert` instead.
 
 ### convert — Reshape existing docs
 
 Archive every existing doc verbatim to `raw/external/` (immutable), scaffold the wiki skeleton including `schema.md` and `open-questions.md` (see init, above), curate each file into the appropriate section. Curated versions may restructure and cross-reference but must not lose information from the originals.
+
+Write the memory block into the repo's root `CLAUDE.md` exactly as `init` does, replacing whatever section currently holds the wiki read instructions (`## Read this first`, `## Knowledge wiki`, `## Project Memory`). Leave `## Operating rules` and other repo-specific law alone.
 
 Never overwrite `raw/external/`. Re-runs stage alongside as `raw/external/<folder>-YYYY-MM-DD/`.
 
