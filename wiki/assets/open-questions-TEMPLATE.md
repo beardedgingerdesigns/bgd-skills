@@ -30,8 +30,12 @@ New entries are appended at the bottom of **Open**. No `weight:` field — rank 
 - **`/wiki lint` tier-3 escalations** — unadjudicable contradictions land here, deduped against
   entries already open.
 - **`/wrap`'s parking step** — questions the session raised and left unanswered.
-- **Cross-repo bubbling** — business-level questions (not implementation detail) also drop a copy
-  into claude-os's own `open-questions.md` via `/wrap`'s notify-AIOS step.
+- **Cross-repo bubbling** *(optional adapter — only where an operator runs a hub repo)* —
+  business-level questions, not implementation detail, also drop a copy into the hub's own ledger
+  via the session-wrap notify step.
+
+This file is created on demand, not scaffolded: it exists because a real question needed
+recording. If `## Open` empties out, delete the file — git history is the ledger.
 
 ## Closing — by routing, not archiving
 

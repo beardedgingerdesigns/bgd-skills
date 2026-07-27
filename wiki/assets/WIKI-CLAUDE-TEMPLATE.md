@@ -12,7 +12,7 @@ This wiki's primary subject is **{{PROJECT_NAME}}** — {{PROJECT_DESCRIPTION}}.
 - **Supersedence** — when a page's conclusion reverses (it asserted X, now asserts not-X, and acting on remembered X would be wrong), retire the old claim into a dated `## Superseded` block at the bottom rather than deleting it or leaving it live. Additive content, rephrasing, and always-wrong corrections are ordinary edits.
 - **Pointer, not copy** — a page must not restate a fact whose canonical home is elsewhere; it links it instead.
 - **Soft line budget** — curated pages target ~120 lines (a lint nudge, never a gate). `raw/` and `notes/` are exempt.
-- **Open questions** — known unknowns live in `open-questions.md` at this wiki root, fed by mid-session gaps, lint escalations, and `/wrap`.
+- **Open questions** — *(include this bullet only once `open-questions.md` exists)* known unknowns live in `open-questions.md` at this wiki root, fed by mid-session gaps, lint escalations, and `/wrap`. The file is created on demand by the first real question, never scaffolded empty.
 - **Provenance** — stamp `source` and `confidence` at write time (`/wiki ingest` at promotion; `/wrap` and `/dispatch` default `inferred`). `verified` only when the operator confirms in-session or the claim restates an authority surface. Three values, no more: they exist to separate verified fact from reported information from inference.
 
 Auto-memory at `{{MEMORY_PATH}}` is the **pointer layer** — `MEMORY.md` lists wiki destinations with one-sentence "why this matters" summaries. The wiki itself is the canonical store.
