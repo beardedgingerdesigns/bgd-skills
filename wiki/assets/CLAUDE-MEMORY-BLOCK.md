@@ -61,8 +61,6 @@ Before your first substantive action:
 3. Read `docs/wiki/log.md`, last 30 lines — what recent sessions did.
 4. Read `docs/wiki/STATE.md` — current delta only. Where work stands, not what the project knows. It names a few files in passing; that is not the file list. You have the file list from step 1.
 
-Use the Read tool for steps 2-4, not `cat`/`tail`. Read-tool calls are the wiki's usage telemetry; Bash reads are invisible to it and make a live page look dead.
-
 This fires for every session. Debugging, a one-line fix, code, content, strategy. No topic exempts you. If you are about to conclude "this session isn't really about project content," stop — that judgment is the documented failure mode.
 
 ### Authority — agent memory is a routing aid, never project authority
