@@ -32,10 +32,10 @@ Substitute the repo's actual paths. Drop what doesn't exist — never emit a poi
 
 | Condition | Action |
 |---|---|
-| No sibling store (`docs/solutions/` or equivalent) | Drop the two-trees sentence, drop the sibling `find` from step 1, drop the Area read section |
+| No sibling store (`docs/solutions/` or equivalent) | Drop the two-trees sentence, drop the sibling `find` from step 1, drop the Area read section. **Delegation is not part of that drop** — it lives under Authority and ships in every repo |
 | Wiki uses a `log/` directory, not `log.md` | Step 3 becomes `ls docs/wiki/log/ \| sort -r \| head -10`, then Read the newest 2-3 entries |
 | No log at all | Drop step 3, renumber |
-| No state file | Drop step 4, renumber |
+| No state file — check the **repo root**, not just the wiki dir | Drop step 4, renumber, and drop the state-file sentence from Authority. A state file that lives outside the wiki still counts: keep step 4, point it at the real path |
 | No `decisions/` | Drop it from the step-1 enumeration |
 | Nested wiki layout (e.g. `pages/`) | Step 1 becomes `find docs/wiki -name '*.md' -not -path '*/raw/*'` |
 | No `schema.md` yet | Drop it from the Write section; scaffold one from `schema-TEMPLATE.md` instead |
@@ -75,6 +75,8 @@ For any project-specific fact, decision, constraint, status, prior conclusion, o
 
 Reading the state file every session does not make it the highest authority. It is read last because it is the current operational delta. **Durable pages and explicit decisions outrank it.**
 
+**Delegation.** Never brief a subagent on documented areas from memory. Run the lookup, pass the exact paths. Recall is lossy and every spawned agent multiplies the loss.
+
 ### Area read — before editing code
 
 The trigger is the area of code you are touching, not the topic of the conversation.
@@ -84,8 +86,6 @@ The trigger is the area of code you are touching, not the topic of the conversat
 | `<path glob>` | `<area README>` |
 
 Editing in an area with no row above: match your area against the step-1 enumeration before you start. Add a row when an area earns an entry point.
-
-**Delegation.** Never brief a subagent on documented areas from memory. Run the lookup, pass the exact paths. Recall is lossy and every spawned agent multiplies the loss.
 
 ### Write
 
