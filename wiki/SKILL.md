@@ -91,6 +91,8 @@ Never overwrite `raw/external/`. Re-runs stage alongside as `raw/external/<folde
 
 The core curation pipeline. Scan `raw/` for unprocessed files, process by authority level (see Source Authority above). Ingest means integrating — touching every page the source affects, not just creating one new page.
 
+**Dispatch, don't run inline (2026-09-03).** Ingest is long-context curation; it runs in the `wiki-ingester` subagent (`wiki/agents/wiki-ingester.md`, symlinked at `~/.claude/agents/`, pinned to `claude-opus-4-6[1m]`), never in the main thread. The main thread does the lookup, not the work: resolve the wiki root, list the pending `raw/` files, and spawn `Agent(subagent_type: "wiki-ingester")` with those exact paths — never a from-memory summary of them. When it reports back, relay the outcomes and put every flag in front of Justin before anything flagged gets written. Commit after the report, not inside the subagent.
+
 **Provenance stamping (ADR 0010 §5).** Assign `source` + `confidence` at promotion — never leave a promoted page untagged. `confidence: reported` when the raw source is faithfully captured (its own claims stay unvetted); `inferred` when the page is agent synthesis with no direct source statement; `verified` only when the operator confirms it in-session, or the claim restates one of the project's **authority surfaces** — the files that own a fact outright, declared per project (in this operator's setup: `context/priorities.md`, `decisions/log.md`, `state/<slug>.md`, `clients.yaml`). A project with no such surfaces simply has fewer routes to `verified`. Never minted automatically otherwise. Full vocabulary in the wiki's `schema.md`.
 
 ### log — Session wrap-up
