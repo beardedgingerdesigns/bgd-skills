@@ -57,9 +57,9 @@ Implement visual effects from the blueprint. Use Three.js, CSS animation, Framer
 
 ## Step 4 — Write the polish handoff
 
-`/impeccable` is the post-build polish tool, and its preflight requires `PRODUCT.md`
-(and strongly prefers `DESIGN.md`) at the project root. Without them it stops and runs
-`$impeccable teach` to interview its way to context you already have. Write both files
+`/impeccable` is the post-build polish tool. It loads `PRODUCT.md` and `DESIGN.md` from
+the project root; without `PRODUCT.md` it routes new work through `$impeccable init` to
+interview its way to context you already have. Write both files
 now — mechanically, from the two documents you just built from. No new decisions.
 
 **`PRODUCT.md`** — derive from `COMPETITOR-RESEARCH.md` + the blueprint:
@@ -76,9 +76,8 @@ Variables, Component Kit, elevation/radius/shadow.
 
 Must clear impeccable's own gate: >200 chars, no `[TODO]` markers, no placeholders.
 
-Then run `node ~/.claude/skills/impeccable/scripts/load-context.mjs` to confirm both
-resolve (`hasProduct: true`, `hasDesign: true`). Note the path — impeccable's SKILL.md
-documents a `.agents/skills/…` loader path that does not exist on this machine.
+Then run `~/.claude/skills/impeccable/scripts/impeccable context` from the project root
+and confirm it loads both files.
 
 This makes the polish family (`polish`, `critique`, `audit`, `distill`, `harden`,
 `typeset`, `colorize`, `quieter`, `bolder`) work on the built site with zero setup —

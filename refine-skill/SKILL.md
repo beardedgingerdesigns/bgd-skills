@@ -22,6 +22,6 @@ For every line, ask: if I deleted this, would the model do something worse? Thre
 
 ## The test
 
-Compare against [grill-me](~/.claude/skills/grill-me/SKILL.md) — 4 sentences that drive an entire interview process. Not every skill can be 4 sentences, but every skill can answer: what's my grill-me version? Start there, then add back only what's genuinely non-obvious.
+Compare against the `grill-me` skill (mattpocock-skills plugin) — a few sentences that drive an entire interview process. Not every skill can be that short, but every skill can answer: what's my grill-me version? Start there, then add back only what's genuinely non-obvious.
 
 Read the skill end-to-end, extract the non-obvious constraints per section, rewrite as behavioral description + constraints only, present before/after line count and what was cut, ask the user to review before writing.
