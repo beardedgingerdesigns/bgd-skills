@@ -1,6 +1,6 @@
 ---
 name: verify-ui
-description: Agent-side visual QA — verify your own UI work instead of asking Justin for screenshots. Drives Playwright against the repo's local dev server; logs in as each documented test role, screenshots key routes, captures console errors, then READS the screenshots and judges them. Use after any UI change before handing work back, when Justin says "verify your work", "check it yourself", "does it look right", or "/verify-ui", and in nightshift/background runs before closing a UI issue. Localhost/dev URLs only — never third-party dashboards.
+description: Agent-side visual QA — verify your own UI work instead of asking Justin for screenshots. Drives Playwright against the repo's local dev server; logs in as each documented test role, screenshots key routes, captures console errors, then READS the screenshots and judges them. Use after any UI change before handing work back, when Justin says "verify your work", "check it yourself", "does it look right", or "/verify-ui", and in background worker runs before closing a UI issue. Localhost/dev URLs only — never third-party dashboards.
 bike-method-phase: 1  # Phase 1 — Training wheels. brandos only, run manually, until two clean weeks.
 three-ms-attribution: |
   Adapted from The Three Ms of AI™ © 2026 Nate Herk.
