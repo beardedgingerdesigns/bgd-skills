@@ -101,6 +101,8 @@ Extract wiki-worthy knowledge from the current session and **write directly to c
 
 Scan recent commits, conversation decisions, deferrals, architecture changes. Categorize into decisions, architecture, capability, or deferral pages. Then run a staleness sweep: do overview pages match what was built? Did this session resolve any deferred decisions? Apply Write Safety rules.
 
+Provenance in log mode follows the stamping rule under ingest: pages default to `confidence: inferred` (the agent is synthesizing the session), and become `verified` only when the operator confirmed the claim in-session or it restates one of the project's authority surfaces.
+
 ### lint — Wiki health check
 
 Apply Write Safety: auto-fix mechanical issues, flag ambiguous semantic ones for the user.
