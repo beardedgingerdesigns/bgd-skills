@@ -81,8 +81,3 @@ Report: files written; decisions worth logging (in the back office, `aios.md` na
 - Write only inside the current repo, through `/wiki log` for the wiki. The back-office drops in `aios.md` are the only writes outside it. Cross-project context stays in the digest.
 - Honest struggles. A digest that says "everything went great" after an hour of churn poisons the retro loop.
 - Don't duplicate: if the session already ran `/wiki log`, note that in the breadcrumb and only fill gaps.
-
----
-
-> *Adapted from The Three Ms of AI™. © 2026 Nate Herk. All rights reserved.*
-> *The Three Ms of AI™ is a trademark of Nate Herk.*
